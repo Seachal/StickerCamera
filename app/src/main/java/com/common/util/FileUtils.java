@@ -2,13 +2,9 @@ package com.common.util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import com.alibaba.fastjson.JSON;
 import com.stickercamera.App;
-import com.stickercamera.app.model.Addon;
 import com.stickercamera.app.model.PhotoItem;
 
 import java.io.BufferedReader;
@@ -20,11 +16,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class FileUtils {
 
@@ -309,17 +302,20 @@ public class FileUtils {
         ArrayList<PhotoItem> photos = new ArrayList<PhotoItem>();
         File dir = new File(path);
         if (dir.exists() && dir.isDirectory()) {
-            for (File file : dir.listFiles(new FileFilter() {
-
+            File[] imgFiles  = dir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
                     String filePath = pathname.getAbsolutePath();
                     return (filePath.endsWith(".png") || filePath.endsWith(".jpg") || filePath
                             .endsWith(".jepg"));
                 }
-            })) {
-                photos.add(new PhotoItem(file.getAbsolutePath(), file.lastModified()));
+            });
+            if (imgFiles!=null){
+                for (File file : dir.listFiles()) {
+                    photos.add(new PhotoItem(file.getAbsolutePath(), file.lastModified()));
+                }
             }
+
         }
         Collections.sort(photos);
         return photos;

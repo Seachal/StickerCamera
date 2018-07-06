@@ -2,6 +2,7 @@ package com.stickercamera.app.camera.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -13,7 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.FloatMath;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -53,14 +54,17 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * 相机界面
  * Created by sky on 15/7/6.
  */
 public class CameraActivity extends CameraBaseActivity {
+
+    public static final String  TAGM  = CameraActivity.class.getSimpleName();
+
 
     private CameraHelper mCameraHelper;
     private Camera.Parameters parameters = null;
@@ -78,25 +82,25 @@ public class CameraActivity extends CameraBaseActivity {
     private int mCurrentCameraId = 0;  //1是前置 0是后置
     private Handler handler = new Handler();
 
-    @InjectView(R.id.masking)
+    @BindView(R.id.masking)
     CameraGrid cameraGrid;
-    @InjectView(R.id.photo_area)
+    @BindView(R.id.photo_area)
     LinearLayout photoArea;
-    @InjectView(R.id.panel_take_photo)
+    @BindView(R.id.panel_take_photo)
     View takePhotoPanel;
-    @InjectView(R.id.takepicture)
+    @BindView(R.id.takepicture)
     Button takePicture;
-    @InjectView(R.id.flashBtn)
+    @BindView(R.id.flashBtn)
     ImageView flashBtn;
-    @InjectView(R.id.change)
+    @BindView(R.id.change)
     ImageView changeBtn;
-    @InjectView(R.id.back)
+    @BindView(R.id.back)
     ImageView backBtn;
-    @InjectView(R.id.next)
+    @BindView(R.id.next)
     ImageView galleryBtn;
-    @InjectView(R.id.focus_index)
+    @BindView(R.id.focus_index)
     View focusIndex;
-    @InjectView(R.id.surfaceView)
+    @BindView(R.id.surfaceView)
     SurfaceView surfaceView;
 
 
@@ -105,7 +109,8 @@ public class CameraActivity extends CameraBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         mCameraHelper = new CameraHelper(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
+        Log.i(TAGM ,"onCreate");
         initView();
         initEvent();
     }
@@ -135,6 +140,20 @@ public class CameraActivity extends CameraBaseActivity {
                 : sysPhotos.size();
         for (int i = 0; i < showNumber; i++) {
             addPhoto(sysPhotos.get(showNumber - 1 - i));
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAGM ,"Permissio");
+        boolean valid = true;
+        for (int grantResult : grantResults) {
+            valid = valid && grantResult == PackageManager.PERMISSION_GRANTED;
+        }
+        if (valid && cameraInst==null) {
+            initEvent();
         }
     }
 
@@ -286,7 +305,7 @@ public class CameraActivity extends CameraBaseActivity {
         }
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
-        return FloatMath.sqrt(x * x + y * y);
+        return (float)Math.sqrt(x * x + y * y);
     }
 
     //放大缩小

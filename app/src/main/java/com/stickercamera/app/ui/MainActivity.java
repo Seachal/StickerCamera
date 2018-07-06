@@ -1,26 +1,19 @@
 package com.stickercamera.app.ui;
 
 import android.graphics.BitmapFactory;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.common.util.DataUtils;
-import com.common.util.FileUtils;
 import com.common.util.StringUtils;
 import com.customview.LabelView;
 import com.github.skykai.stickercamera.R;
@@ -32,13 +25,9 @@ import com.stickercamera.app.model.FeedItem;
 import com.stickercamera.app.model.TagItem;
 import com.stickercamera.base.BaseActivity;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -49,9 +38,10 @@ import de.greenrobot.event.EventBus;
  */
 public class MainActivity extends BaseActivity {
 
-    @InjectView(R.id.fab)
+
+
     FloatingActionButton fab;
-    @InjectView(R.id.recycler_view)
+
     RecyclerView mRecyclerView;
     private List<FeedItem> feedList;
     private PictureAdapter mAdapter;
@@ -61,7 +51,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+
+
+
         EventBus.getDefault().register(this);
         initView();
 
@@ -99,10 +91,11 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         titleBar.hideLeftBtn();
         titleBar.hideRightBtn();
-
+        mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new PictureAdapter();
         mRecyclerView.setAdapter(mAdapter);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> CameraManager.getInst().openCamera(MainActivity.this));
     }
 
@@ -186,10 +179,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.pictureLayout)
+
         RelativeLayout pictureLayout;
-        @InjectView(R.id.picture)
+
         ImageView picture;
+
 
         private List<TagItem> tagList = new ArrayList<>();
 
@@ -206,7 +200,9 @@ public class MainActivity extends BaseActivity {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            pictureLayout = (RelativeLayout) itemView.findViewById(R.id.pictureLayout);
+            picture = (ImageView) itemView.findViewById(R.id.picture);
+
         }
     }
 
